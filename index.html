@@ -61,7 +61,7 @@
           <h1 class="text-xs sm:text-sm font-bold text-white tracking-tight">Kantor Virtual Bos</h1>
           <span id="sync-dot" class="w-2 h-2 rounded-full bg-amber-400" title="Mode Standby"></span>
         </div>
-        <p id="sync-status-text" class="text-[10px] sm:text-[11px] text-slate-400">1/4 Aktif • Belum Terhubung</p>
+        <p id="sync-status-text" class="text-[10px] sm:text-[11px] text-slate-400">2/4 Aktif • Belum Terhubung</p>
       </div>
     </div>
 
@@ -72,7 +72,7 @@
     </button>
   </div>
 
-  <!-- KARTU LIVE TELEGRAM FEED (Muncul di bawah header saat ada aktivitas chat) -->
+  <!-- KARTU LIVE TELEGRAM FEED -->
   <div id="live-chat-card" class="fixed top-20 left-3 right-3 sm:left-auto sm:right-3 sm:w-96 z-20 pointer-events-none">
     <div id="chat-card-inner" class="bg-slate-900/85 backdrop-blur-xl border border-slate-700/80 rounded-2xl p-3.5 shadow-2xl pointer-events-auto transition-all duration-300">
       <div class="flex items-center justify-between mb-2">
@@ -88,8 +88,8 @@
           <p id="hud-user-msg" class="text-slate-200 line-clamp-2">Menunggu pesan pertama dari Telegram...</p>
         </div>
         <div class="bg-emerald-950/50 rounded-xl px-3 py-2 border border-emerald-500/30">
-          <p class="text-[10px] font-semibold text-emerald-400 mb-0.5">🤖 Asisten:</p>
-          <p id="hud-bot-reply" class="text-emerald-100 line-clamp-3">Siap bekerja, Bos! Klik "Sambungkan Kantor" di pojok kanan atas untuk sinkronisasi live.</p>
+          <p class="text-[10px] font-semibold text-emerald-400 mb-0.5">🤖 Asisten & 🎬 Editor:</p>
+          <p id="hud-bot-reply" class="text-emerald-100 line-clamp-3">Tim siap bekerja, Bos! AI Video Editor sudah masuk meja dan siap render `/buat`.</p>
         </div>
       </div>
     </div>
@@ -101,20 +101,23 @@
       Geser 1 jari: Putar • Cubit: Zoom • Pilih sudut kamera di bawah
     </div>
 
-    <div class="bg-slate-900/85 backdrop-blur-xl border border-slate-700/80 rounded-2xl p-1.5 shadow-2xl pointer-events-auto flex items-center gap-1.5 max-w-lg mx-auto w-full">
-      <button data-cam="overview" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 shadow-md transition-all">
-        🏢 Overview Kantor
+    <div class="bg-slate-900/85 backdrop-blur-xl border border-slate-700/80 rounded-2xl p-1.5 shadow-2xl pointer-events-auto flex items-center gap-1.5 max-w-xl mx-auto w-full">
+      <button data-cam="overview" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-[11px] sm:text-xs font-bold bg-emerald-500 text-slate-950 shadow-md transition-all">
+        🏢 Overview
       </button>
-      <button data-cam="assistant" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 hover:bg-slate-700 transition-all">
-        🤖 Meja Asisten
+      <button data-cam="assistant" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-[11px] sm:text-xs font-semibold bg-slate-800/90 text-slate-200 hover:bg-slate-700 transition-all">
+        🤖 Asisten
       </button>
-      <button data-cam="vacant" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 hover:bg-slate-700 transition-all">
-        🪑 Meja Kosong
+      <button data-cam="editor" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-[11px] sm:text-xs font-semibold bg-slate-800/90 text-slate-200 hover:bg-slate-700 transition-all">
+        🎬 Editor
+      </button>
+      <button data-cam="vacant" class="cam-btn flex-1 py-2.5 px-2 rounded-xl text-[11px] sm:text-xs font-semibold bg-slate-800/90 text-slate-200 hover:bg-slate-700 transition-all">
+        🪑 Kosong
       </button>
     </div>
   </div>
 
-  <!-- MODAL SAMBUNGKAN KANTOR (Mobile-Friendly) -->
+  <!-- MODAL SAMBUNGKAN KANTOR -->
   <div id="connect-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
     <div class="animate-pop w-full max-w-md bg-slate-900 border border-slate-700 rounded-3xl p-5 shadow-2xl space-y-4">
       <div class="flex items-center justify-between">
@@ -147,7 +150,6 @@
         </p>
       </div>
 
-      <!-- Notifikasi Status Modal -->
       <div id="modal-feedback" class="hidden rounded-xl px-3 py-2 text-xs font-medium"></div>
 
       <div class="flex flex-col sm:flex-row gap-2 pt-1">
@@ -155,7 +157,7 @@
           💾 Simpan & Hubungkan
         </button>
         <button id="btn-demo-chat" class="flex-1 bg-slate-800 hover:bg-slate-700 active:scale-95 text-cyan-300 border border-cyan-500/30 font-semibold text-xs py-3 px-4 rounded-xl transition-all">
-          ⚡ Demo Simulasi Chat
+          ⚡ Demo Simulasi Tim
         </button>
       </div>
     </div>
@@ -211,30 +213,51 @@
     dirLight.shadow.bias = -0.001;
     scene.add(dirLight);
 
-    // Lampu sorot khusus di atas Meja Asisten Pribadi
+    // Lampu sorot Meja Asisten Pribadi (Hijau Emerald)
     const assistantLight = new THREE.PointLight(0x10b981, 1.5, 7.5);
     assistantLight.position.set(-3.2, 3.0, -3.2);
     scene.add(assistantLight);
 
+    // Lampu sorot Meja AI Video Editor (Cyan / Biru Studio)
+    const editorLight = new THREE.PointLight(0x06b6d4, 1.5, 7.5);
+    editorLight.position.set(-3.2, 3.0, 3.2);
+    scene.add(editorLight);
+
     // ==========================================
     // 3. TEKSTUR HOLOGRAM & GELEMBUNG CHAT 3D
     // ==========================================
-    function createHologramSign(title, subtitle, isActive) {
+    function createHologramSign(title, subtitle, state = 'vacant') {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 150;
       const ctx = canvas.getContext('2d');
 
-      ctx.fillStyle = isActive ? 'rgba(6, 78, 59, 0.92)' : 'rgba(15, 23, 42, 0.85)';
+      const bgColors = {
+        assistant: 'rgba(6, 78, 59, 0.92)',
+        editor: 'rgba(14, 116, 144, 0.92)',
+        vacant: 'rgba(15, 23, 42, 0.85)'
+      };
+      const borderColors = {
+        assistant: '#34d399',
+        editor: '#22d3ee',
+        vacant: '#38bdf8'
+      };
+      const titleColors = {
+        assistant: '#6ee7b7',
+        editor: '#67e8f9',
+        vacant: '#7dd3fc'
+      };
+
+      ctx.fillStyle = bgColors[state] || bgColors.vacant;
       ctx.beginPath();
       ctx.roundRect(14, 14, 484, 122, 26);
       ctx.fill();
 
       ctx.lineWidth = 5;
-      ctx.strokeStyle = isActive ? '#34d399' : '#38bdf8';
+      ctx.strokeStyle = borderColors[state] || borderColors.vacant;
       ctx.stroke();
 
-      ctx.fillStyle = isActive ? '#6ee7b7' : '#7dd3fc';
+      ctx.fillStyle = titleColors[state] || titleColors.vacant;
       ctx.font = 'bold 31px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(title, 256, 68);
@@ -249,7 +272,7 @@
       return sprite;
     }
 
-    // Gelembung Pikiran/Chat Dinamis di atas kepala Asisten 3D
+    // Gelembung Chat di atas Asisten
     const bubbleCanvas = document.createElement('canvas');
     bubbleCanvas.width = 640;
     bubbleCanvas.height = 240;
@@ -259,6 +282,17 @@
     bubbleSprite.scale.set(3.6, 1.35, 1);
     bubbleSprite.position.set(-2.7, 3.45, -2.7);
     scene.add(bubbleSprite);
+
+    // Gelembung Status di atas AI Video Editor
+    const editorBubbleCanvas = document.createElement('canvas');
+    editorBubbleCanvas.width = 640;
+    editorBubbleCanvas.height = 200;
+    const editorBubbleCtx = editorBubbleCanvas.getContext('2d');
+    const editorBubbleTexture = new THREE.CanvasTexture(editorBubbleCanvas);
+    const editorBubbleSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: editorBubbleTexture, transparent: true }));
+    editorBubbleSprite.scale.set(3.3, 1.05, 1);
+    editorBubbleSprite.position.set(-2.75, 3.35, 2.65);
+    scene.add(editorBubbleSprite);
 
     function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
       const words = text.split(' ');
@@ -288,13 +322,11 @@
     function update3DSpeechBubble(userText, botText, highlight = false) {
       bubbleCtx.clearRect(0, 0, 640, 240);
 
-      // Background gelembung
       bubbleCtx.fillStyle = highlight ? 'rgba(6, 95, 70, 0.96)' : 'rgba(15, 23, 42, 0.92)';
       bubbleCtx.beginPath();
       bubbleCtx.roundRect(16, 12, 608, 190, 32);
       bubbleCtx.fill();
 
-      // Ekor gelembung bawah
       bubbleCtx.beginPath();
       bubbleCtx.moveTo(295, 202);
       bubbleCtx.lineTo(320, 232);
@@ -302,19 +334,16 @@
       bubbleCtx.closePath();
       bubbleCtx.fill();
 
-      // Border neon
       bubbleCtx.lineWidth = 6;
       bubbleCtx.strokeStyle = highlight ? '#22d3ee' : '#10b981';
       bubbleCtx.stroke();
 
-      // Teks Pesan Bos
       bubbleCtx.fillStyle = '#38bdf8';
       bubbleCtx.font = 'bold 23px Inter, sans-serif';
       bubbleCtx.textAlign = 'left';
       const shortUser = userText.length > 42 ? userText.substring(0, 42) + '...' : userText;
       bubbleCtx.fillText('📩 Bos: ' + shortUser, 40, 56);
 
-      // Teks Balasan Asisten
       bubbleCtx.fillStyle = '#f8fafc';
       bubbleCtx.font = '500 23px Inter, sans-serif';
       wrapText(bubbleCtx, '🤖 ' + botText, 40, 98, 560, 32, 3);
@@ -322,7 +351,40 @@
       bubbleTexture.needsUpdate = true;
     }
 
+    function updateEditorBubble(statusLine, taskLine, rendering = false) {
+      editorBubbleCtx.clearRect(0, 0, 640, 200);
+
+      editorBubbleCtx.fillStyle = rendering ? 'rgba(14, 116, 144, 0.96)' : 'rgba(15, 23, 42, 0.92)';
+      editorBubbleCtx.beginPath();
+      editorBubbleCtx.roundRect(16, 12, 608, 152, 30);
+      editorBubbleCtx.fill();
+
+      editorBubbleCtx.beginPath();
+      editorBubbleCtx.moveTo(295, 164);
+      editorBubbleCtx.lineTo(320, 192);
+      editorBubbleCtx.lineTo(345, 164);
+      editorBubbleCtx.closePath();
+      editorBubbleCtx.fill();
+
+      editorBubbleCtx.lineWidth = 6;
+      editorBubbleCtx.strokeStyle = rendering ? '#a855f7' : '#22d3ee';
+      editorBubbleCtx.stroke();
+
+      editorBubbleCtx.fillStyle = '#67e8f9';
+      editorBubbleCtx.font = 'bold 23px Inter, sans-serif';
+      editorBubbleCtx.textAlign = 'left';
+      editorBubbleCtx.fillText('🎬 ' + statusLine, 40, 58);
+
+      editorBubbleCtx.fillStyle = '#f8fafc';
+      editorBubbleCtx.font = '500 22px Inter, sans-serif';
+      const shortTask = taskLine.length > 44 ? taskLine.substring(0, 44) + '...' : taskLine;
+      editorBubbleCtx.fillText(shortTask, 40, 108);
+
+      editorBubbleTexture.needsUpdate = true;
+    }
+
     update3DSpeechBubble("Standby", "Siap terima perintah Bos lewat Telegram!", false);
+    updateEditorBubble("AI Video Editor Aktif", "Timeline & FFmpeg siap render /buat!", false);
 
     // ==========================================
     // 4. ARSITEKTUR RUANGAN KANTOR STARTUP
@@ -330,7 +392,6 @@
     const officeGroup = new THREE.Group();
     scene.add(officeGroup);
 
-    // Lantai kayu hangat (Warm Wood Flooring)
     const floor = new THREE.Mesh(
       new THREE.BoxGeometry(13.5, 0.4, 13.5),
       new THREE.MeshStandardMaterial({ color: 0x784b2a, roughness: 0.65, metalness: 0.05 })
@@ -339,12 +400,10 @@
     floor.receiveShadow = true;
     officeGroup.add(floor);
 
-    // Tekstur garis papan kayu halus
     const woodLines = new THREE.GridHelper(13.5, 18, 0x5c371c, 0x663e20);
     woodLines.position.y = 0.005;
     officeGroup.add(woodLines);
 
-    // Karpet meeting bundar di tengah ruangan
     const rug = new THREE.Mesh(
       new THREE.CylinderGeometry(2.6, 2.6, 0.04, 36),
       new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 })
@@ -361,7 +420,6 @@
     rugRing.position.y = 0.045;
     officeGroup.add(rugRing);
 
-    // Dinding Belakang & Kiri
     const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.85 });
     const backWall = new THREE.Mesh(new THREE.BoxGeometry(13.5, 3.6, 0.3), wallMat);
     backWall.position.set(0, 1.8, -6.6);
@@ -373,7 +431,6 @@
     leftWall.receiveShadow = true;
     officeGroup.add(leftWall);
 
-    // Partisi Kaca Transparan di tengah antar zona
     const glassMat = new THREE.MeshPhysicalMaterial({
       color: 0x38bdf8,
       transparent: true,
@@ -393,13 +450,13 @@
     // 5. PEMBUAT MEJA KERJA (WORKSTATION)
     // ==========================================
     let assistantMonitorMats = [];
+    let editorMonitorMats = [];
 
-    function createWorkstation(x, z, rotY, isActive) {
+    function createWorkstation(x, z, rotY, isActive, accentHex = 0x10b981, monitorTargetArr = null) {
       const station = new THREE.Group();
       station.position.set(x, 0, z);
       station.rotation.y = rotY;
 
-      // Meja modern
       const desk = new THREE.Mesh(
         new THREE.BoxGeometry(2.7, 0.12, 1.35),
         new THREE.MeshStandardMaterial({ color: isActive ? 0xf8fafc : 0x475569, roughness: 0.35 })
@@ -409,7 +466,6 @@
       desk.receiveShadow = true;
       station.add(desk);
 
-      // Kaki meja metal
       const legMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.7, roughness: 0.3 });
       [[-1.2, -0.52], [1.2, -0.52], [-1.2, 0.52], [1.2, 0.52]].forEach(([lx, lz]) => {
         const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1.05, 8), legMat);
@@ -419,7 +475,6 @@
       });
 
       if (isActive) {
-        // Dual Monitor menyala untuk Asisten Pribadi
         [-0.52, 0.52].forEach((mx, idx) => {
           const monGroup = new THREE.Group();
           monGroup.position.set(mx, 1.58, -0.35);
@@ -432,15 +487,14 @@
           frame.castShadow = true;
           monGroup.add(frame);
 
-          const screenMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
-          assistantMonitorMats.push(screenMat);
+          const screenMat = new THREE.MeshBasicMaterial({ color: accentHex });
+          if (monitorTargetArr) monitorTargetArr.push(screenMat);
           const screen = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.5, 0.07), screenMat);
           monGroup.add(screen);
 
           station.add(monGroup);
         });
       } else {
-        // Single monitor mati untuk meja rekrutmen
         const frame = new THREE.Mesh(
           new THREE.BoxGeometry(1.05, 0.6, 0.07),
           new THREE.MeshStandardMaterial({ color: 0x0f172a })
@@ -457,12 +511,11 @@
         station.add(screen);
       }
 
-      // Kursi kantor
       const chair = new THREE.Group();
       chair.position.set(0, 0, 0.78);
       const seat = new THREE.Mesh(
         new THREE.BoxGeometry(0.76, 0.12, 0.76),
-        new THREE.MeshStandardMaterial({ color: isActive ? 0x10b981 : 0x334155 })
+        new THREE.MeshStandardMaterial({ color: isActive ? accentHex : 0x334155 })
       );
       seat.position.y = 0.65;
       seat.castShadow = true;
@@ -470,7 +523,7 @@
 
       const back = new THREE.Mesh(
         new THREE.BoxGeometry(0.76, 0.76, 0.12),
-        new THREE.MeshStandardMaterial({ color: isActive ? 0x059669 : 0x1e293b })
+        new THREE.MeshStandardMaterial({ color: isActive ? 0x0f172a : 0x1e293b })
       );
       back.position.set(0, 1.05, 0.32);
       back.castShadow = true;
@@ -486,12 +539,11 @@
     }
 
     // 1. Meja Asisten Pribadi & Manajer (Aktif)
-    createWorkstation(-3.3, -3.3, Math.PI / 4, true);
-    const signAsisten = createHologramSign("🤖 ASISTEN PRIBADI & MANAJER", "● ONLINE • Siap Perintah Bos", true);
+    createWorkstation(-3.3, -3.3, Math.PI / 4, true, 0x10b981, assistantMonitorMats);
+    const signAsisten = createHologramSign("🤖 ASISTEN PRIBADI & MANAJER", "● ONLINE • Siap Perintah Bos", "assistant");
     signAsisten.position.set(-3.3, 2.35, -3.3);
     officeGroup.add(signAsisten);
 
-    // Cincin status hijau melayang di lantai meja asisten
     const statusRing = new THREE.Mesh(
       new THREE.RingGeometry(1.75, 1.92, 36),
       new THREE.MeshBasicMaterial({ color: 0x10b981, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
@@ -502,93 +554,118 @@
 
     // 2. Meja AI Researcher (Kosong / Rekrutmen)
     createWorkstation(3.3, -3.3, -Math.PI / 4, false);
-    const signRiset = createHologramSign("🔍 AI RESEARCHER", "REKRUTMEN • Segera Hadir", false);
+    const signRiset = createHologramSign("🔍 AI RESEARCHER", "REKRUTMEN • Segera Hadir", "vacant");
     signRiset.position.set(3.3, 2.55, -3.3);
     officeGroup.add(signRiset);
 
-    // 3. Meja AI Video Editor (Kosong / Rekrutmen)
-    createWorkstation(-3.3, 3.2, (3 * Math.PI) / 4, false);
-    const signEditor = createHologramSign("🎬 AI VIDEO EDITOR", "REKRUTMEN • Segera Hadir", false);
-    signEditor.position.set(-3.3, 2.55, 3.2);
+    // 3. Meja AI Video Editor (AKTIF! Karyawan #2)
+    createWorkstation(-3.3, 3.2, (3 * Math.PI) / 4, true, 0x06b6d4, editorMonitorMats);
+    const signEditor = createHologramSign("🎬 AI VIDEO EDITOR", "● ONLINE • Render & Editing Aktif", "editor");
+    signEditor.position.set(-3.3, 2.35, 3.2);
     officeGroup.add(signEditor);
+
+    const editorStatusRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.75, 1.92, 36),
+      new THREE.MeshBasicMaterial({ color: 0x06b6d4, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+    );
+    editorStatusRing.rotation.x = -Math.PI / 2;
+    editorStatusRing.position.set(-3.1, 0.03, 3.0);
+    officeGroup.add(editorStatusRing);
 
     // 4. Meja AI Uploader (Kosong / Rekrutmen)
     createWorkstation(3.3, 3.2, (-3 * Math.PI) / 4, false);
-    const signUpload = createHologramSign("🚀 AI UPLOADER", "REKRUTMEN • Segera Hadir", false);
+    const signUpload = createHologramSign("🚀 AI UPLOADER", "REKRUTMEN • Segera Hadir", "vacant");
     signUpload.position.set(3.3, 2.55, 3.2);
     officeGroup.add(signUpload);
 
     // ==========================================
-    // 6. KARAKTER 3D ASISTEN PRIBADI (STYLIZED BOT)
+    // 6. PEMBUAT KARAKTER KARYAWAN ROBOT 3D
     // ==========================================
-    const robotGroup = new THREE.Group();
-    robotGroup.position.set(-2.78, 0.72, -2.78);
-    robotGroup.rotation.y = Math.PI / 4 + Math.PI;
+    function createRobotEmployee(x, y, z, rotY, coreHex, eyeHex, antennaHex, bodyHex = 0xf8fafc) {
+      const group = new THREE.Group();
+      group.position.set(x, y, z);
+      group.rotation.y = rotY;
 
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25, metalness: 0.15 });
-    const coreMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x059669, emissiveIntensity: 0.5 });
+      const bodyMat = new THREE.MeshStandardMaterial({ color: bodyHex, roughness: 0.25, metalness: 0.15 });
+      const coreMat = new THREE.MeshStandardMaterial({ color: coreHex, emissive: coreHex, emissiveIntensity: 0.45 });
 
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.62, 0.4), bodyMat);
-    torso.position.y = 0.35;
-    torso.castShadow = true;
-    robotGroup.add(torso);
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.62, 0.4), bodyMat);
+      torso.position.y = 0.35;
+      torso.castShadow = true;
+      group.add(torso);
 
-    const chestCore = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 0.42), coreMat);
-    chestCore.position.y = 0.38;
-    robotGroup.add(chestCore);
+      const chestCore = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 0.42), coreMat);
+      chestCore.position.y = 0.38;
+      group.add(chestCore);
 
-    const headGroup = new THREE.Group();
-    headGroup.position.y = 0.92;
-    robotGroup.add(headGroup);
+      const headGroup = new THREE.Group();
+      headGroup.position.y = 0.92;
+      group.add(headGroup);
 
-    const headBox = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.48, 0.48), bodyMat);
-    headBox.castShadow = true;
-    headGroup.add(headBox);
+      const headBox = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.48, 0.48), bodyMat);
+      headBox.castShadow = true;
+      headGroup.add(headBox);
 
-    const visor = new THREE.Mesh(
-      new THREE.BoxGeometry(0.56, 0.32, 0.05),
-      new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.1 })
+      const visor = new THREE.Mesh(
+        new THREE.BoxGeometry(0.56, 0.32, 0.05),
+        new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.1 })
+      );
+      visor.position.set(0, 0, 0.23);
+      headGroup.add(visor);
+
+      const eyeMat = new THREE.MeshBasicMaterial({ color: eyeHex });
+      const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), eyeMat);
+      leftEye.position.set(-0.14, 0.02, 0.26);
+      headGroup.add(leftEye);
+
+      const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), eyeMat);
+      rightEye.position.set(0.14, 0.02, 0.26);
+      headGroup.add(rightEye);
+
+      const antennaTip = new THREE.Mesh(
+        new THREE.SphereGeometry(0.065, 12, 12),
+        new THREE.MeshBasicMaterial({ color: antennaHex })
+      );
+      antennaTip.position.set(0, 0.44, 0);
+      headGroup.add(antennaTip);
+
+      const antennaStem = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.02, 0.02, 0.2, 8),
+        new THREE.MeshStandardMaterial({ color: 0x94a3b8 })
+      );
+      antennaStem.position.set(0, 0.33, 0);
+      headGroup.add(antennaStem);
+
+      const armGeo = new THREE.BoxGeometry(0.14, 0.44, 0.14);
+      const leftArm = new THREE.Mesh(armGeo, bodyMat);
+      leftArm.position.set(-0.38, 0.36, 0.12);
+      leftArm.rotation.x = -0.6;
+      leftArm.castShadow = true;
+      group.add(leftArm);
+
+      const rightArm = new THREE.Mesh(armGeo, bodyMat);
+      rightArm.position.set(0.38, 0.36, 0.12);
+      rightArm.rotation.x = -0.6;
+      rightArm.castShadow = true;
+      group.add(rightArm);
+
+      officeGroup.add(group);
+      return { group, headGroup, leftArm, rightArm, antennaTip };
+    }
+
+    // Karyawan 1: Asisten Pribadi & Manajer
+    const assistantBot = createRobotEmployee(
+      -2.78, 0.72, -2.78,
+      Math.PI / 4 + Math.PI,
+      0x10b981, 0x34d399, 0x22d3ee, 0xf8fafc
     );
-    visor.position.set(0, 0, 0.23);
-    headGroup.add(visor);
 
-    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x34d399 });
-    const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), eyeMat);
-    leftEye.position.set(-0.14, 0.02, 0.26);
-    headGroup.add(leftEye);
-
-    const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), eyeMat);
-    rightEye.position.set(0.14, 0.02, 0.26);
-    headGroup.add(rightEye);
-
-    const antennaTip = new THREE.Mesh(
-      new THREE.SphereGeometry(0.065, 12, 12),
-      new THREE.MeshBasicMaterial({ color: 0x22d3ee })
+    // Karyawan 2: AI Video Editor (duduk menghadap meja editor di -3.3, 3.2)
+    const editorBot = createRobotEmployee(
+      -2.78, 0.72, 2.68,
+      (3 * Math.PI) / 4 + Math.PI,
+      0x06b6d4, 0x38bdf8, 0xa855f7, 0xe2e8f0
     );
-    antennaTip.position.set(0, 0.44, 0);
-    headGroup.add(antennaTip);
-
-    const antennaStem = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.02, 0.02, 0.2, 8),
-      new THREE.MeshStandardMaterial({ color: 0x94a3b8 })
-    );
-    antennaStem.position.set(0, 0.33, 0);
-    headGroup.add(antennaStem);
-
-    const armGeo = new THREE.BoxGeometry(0.14, 0.44, 0.14);
-    const leftArm = new THREE.Mesh(armGeo, bodyMat);
-    leftArm.position.set(-0.38, 0.36, 0.12);
-    leftArm.rotation.x = -0.6;
-    leftArm.castShadow = true;
-    robotGroup.add(leftArm);
-
-    const rightArm = new THREE.Mesh(armGeo, bodyMat);
-    rightArm.position.set(0.38, 0.36, 0.12);
-    rightArm.rotation.x = -0.6;
-    rightArm.castShadow = true;
-    robotGroup.add(rightArm);
-
-    officeGroup.add(robotGroup);
 
     // Tanaman hias sudut ruangan
     [[-5.8, -5.8], [5.8, -5.8], [-5.8, 5.8], [5.8, 5.8]].forEach(([px, pz]) => {
@@ -615,7 +692,8 @@
     const camPresets = {
       overview:  { pos: new THREE.Vector3(11.5, 10.5, 11.5), target: new THREE.Vector3(0, 1, 0) },
       assistant: { pos: new THREE.Vector3(0.4, 3.6, 0.4), target: new THREE.Vector3(-2.9, 1.8, -2.9) },
-      vacant:    { pos: new THREE.Vector3(-1.5, 5.2, 8.8), target: new THREE.Vector3(1.5, 1.3, 1.2) }
+      editor:    { pos: new THREE.Vector3(0.4, 3.6, 0.2), target: new THREE.Vector3(-2.9, 1.8, 2.8) },
+      vacant:    { pos: new THREE.Vector3(0.2, 5.2, 0.2), target: new THREE.Vector3(3.2, 1.4, 0.0) }
     };
 
     let targetCamPos = camPresets.overview.pos.clone();
@@ -648,11 +726,11 @@
     // 8. LIVE TELEGRAM SYNC & REAKSI 3D
     // ==========================================
     let excitementTimer = 0;
+    let editorRenderTimer = 0;
     let lastKnownUpdatedAt = null;
     const STORAGE_KEY = 'kantor_ai_webapp_url';
 
     function triggerIncomingChatReaction(userMsg, botReply, timeLabel) {
-      // 1. Update HUD Kartu Live Feed
       document.getElementById('hud-user-msg').textContent = userMsg;
       document.getElementById('hud-bot-reply').textContent = botReply;
       document.getElementById('last-updated-time').textContent = timeLabel || 'Baru saja';
@@ -661,13 +739,20 @@
       card.classList.add('border-cyan-400', 'shadow-cyan-500/20');
       setTimeout(() => card.classList.remove('border-cyan-400', 'shadow-cyan-500/20'), 3000);
 
-      // 2. Update Gelembung 3D di atas kepala robot
       update3DSpeechBubble(userMsg, botReply, true);
       setTimeout(() => update3DSpeechBubble(userMsg, botReply, false), 5000);
 
-      // 3. Picu animasi melambai, monitor berkedip cyan, & arahkan kamera ke Asisten
+      const isVideoCmd = /\/buat|video|render|edit/i.test(userMsg + ' ' + botReply);
+      if (isVideoCmd) {
+        updateEditorBubble("Sedang Merender Video!", userMsg, true);
+        editorRenderTimer = 6.0;
+        setTimeout(() => updateEditorBubble("AI Video Editor Aktif", "Selesai memproses antrean video!", false), 6500);
+        setActiveCamera('editor');
+      } else {
+        setActiveCamera('assistant');
+      }
+
       excitementTimer = 3.2;
-      setActiveCamera('assistant');
     }
 
     async function pollGoogleAppsScript() {
@@ -678,20 +763,17 @@
         const res = await fetch(savedUrl, { cache: 'no-store' });
         const data = await res.json();
 
-        // Update indikator status terhubung
         document.getElementById('sync-dot').className = 'w-2 h-2 rounded-full bg-emerald-400 animate-ping';
-        document.getElementById('sync-status-text').textContent = '1/4 Aktif • Live Telegram Sync';
+        document.getElementById('sync-status-text').textContent = '2/4 Aktif • Live Telegram Sync';
 
         if (data && data.updatedAt && data.updatedAt !== "0") {
           if (lastKnownUpdatedAt === null) {
-            // Sinkronisasi awal saat halaman baru dibuka
             lastKnownUpdatedAt = data.updatedAt;
             document.getElementById('hud-user-msg').textContent = data.lastUserMsg;
             document.getElementById('hud-bot-reply').textContent = data.lastBotReply;
             document.getElementById('last-updated-time').textContent = 'Tersinkron';
             update3DSpeechBubble(data.lastUserMsg, data.lastBotReply, false);
           } else if (data.updatedAt !== lastKnownUpdatedAt) {
-            // Ada chat baru masuk dari Telegram!
             lastKnownUpdatedAt = data.updatedAt;
             const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             triggerIncomingChatReaction(data.lastUserMsg, data.lastBotReply, now);
@@ -699,11 +781,10 @@
         }
       } catch (err) {
         document.getElementById('sync-dot').className = 'w-2 h-2 rounded-full bg-rose-400';
-        document.getElementById('sync-status-text').textContent = '1/4 Aktif • Cek URL Web App';
+        document.getElementById('sync-status-text').textContent = '2/4 Aktif • Cek URL Web App';
       }
     }
 
-    // Polling otomatis setiap 4 detik
     setInterval(pollGoogleAppsScript, 4000);
 
     // ==========================================
@@ -750,15 +831,14 @@
       }, 900);
     });
 
-    // Tombol Demo Simulasi Chat (Untuk tes reaksi 3D langsung)
     const demoSamples = [
       {
-        user: "Catet ide konten besok: 3 AI gratis yang wajib dicoba!",
-        bot: "Siap Bos! Ide konten '3 AI Gratis' udah dicatat. Mau sekalian saya buatin hook pembukanya?"
+        user: "/buat Kenapa Air Putih Terasa Lebih Enak Saat Haus?",
+        bot: "Pesanan diterima Bos! Langsung dioper ke meja AI Video Editor untuk render 9:16."
       },
       {
         user: "Gimana status tim kantor hari ini?",
-        bot: "Lapor Bos! Saya standby 100% di meja. Meja Riset, Editor, & Uploader masih siap nunggu rekrutmen."
+        bot: "Lapor Bos! Asisten & AI Video Editor sudah aktif 100%. Sisa 2 meja lagi (Researcher & Uploader)."
       }
     ];
     let demoIdx = 0;
@@ -780,37 +860,61 @@
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
+      // --- Animasi Karyawan 1: Asisten Pribadi ---
       if (excitementTimer > 0) {
         excitementTimer -= 0.016;
-        // Asisten melompat senang, mengangguk & melambai
-        robotGroup.position.y = 0.72 + Math.abs(Math.sin(elapsed * 11)) * 0.24;
-        headGroup.rotation.y = Math.sin(elapsed * 8) * 0.25;
-        headGroup.rotation.x = Math.sin(elapsed * 14) * 0.15;
-        rightArm.rotation.x = -2.65;
-        rightArm.rotation.z = Math.sin(elapsed * 15) * 0.4;
+        assistantBot.group.position.y = 0.72 + Math.abs(Math.sin(elapsed * 11)) * 0.24;
+        assistantBot.headGroup.rotation.y = Math.sin(elapsed * 8) * 0.25;
+        assistantBot.headGroup.rotation.x = Math.sin(elapsed * 14) * 0.15;
+        assistantBot.rightArm.rotation.x = -2.65;
+        assistantBot.rightArm.rotation.z = Math.sin(elapsed * 15) * 0.4;
 
-        // Monitor meja berkedip cyan terang
         const flashColor = Math.sin(elapsed * 16) > 0 ? 0x22d3ee : 0x10b981;
         assistantMonitorMats.forEach(mat => mat.color.setHex(flashColor));
         assistantLight.color.setHex(flashColor);
         assistantLight.intensity = 2.4;
       } else {
-        // Kembali bekerja mengetik cepat
-        robotGroup.position.y = THREE.MathUtils.lerp(robotGroup.position.y, 0.72, 0.15);
-        headGroup.rotation.y = Math.sin(elapsed * 1.4) * 0.15;
-        headGroup.rotation.x = Math.sin(elapsed * 2.8) * 0.05;
-        leftArm.rotation.x = -0.65 + Math.sin(elapsed * 18) * 0.14;
-        rightArm.rotation.x = -0.65 + Math.cos(elapsed * 18) * 0.14;
-        rightArm.rotation.z = THREE.MathUtils.lerp(rightArm.rotation.z, 0, 0.2);
+        assistantBot.group.position.y = THREE.MathUtils.lerp(assistantBot.group.position.y, 0.72, 0.15);
+        assistantBot.headGroup.rotation.y = Math.sin(elapsed * 1.4) * 0.15;
+        assistantBot.headGroup.rotation.x = Math.sin(elapsed * 2.8) * 0.05;
+        assistantBot.leftArm.rotation.x = -0.65 + Math.sin(elapsed * 18) * 0.14;
+        assistantBot.rightArm.rotation.x = -0.65 + Math.cos(elapsed * 18) * 0.14;
+        assistantBot.rightArm.rotation.z = THREE.MathUtils.lerp(assistantBot.rightArm.rotation.z, 0, 0.2);
 
         assistantMonitorMats.forEach(mat => mat.color.setHex(0x10b981));
         assistantLight.color.setHex(0x10b981);
         assistantLight.intensity = 1.4 + Math.sin(elapsed * 4) * 0.2;
       }
 
-      // Animasi denyut cincin status lantai & antena
+      // --- Animasi Karyawan 2: AI Video Editor ---
+      if (editorRenderTimer > 0) {
+        editorRenderTimer -= 0.016;
+        editorBot.group.position.y = 0.72 + Math.abs(Math.sin(elapsed * 13)) * 0.14;
+        editorBot.headGroup.rotation.y = Math.sin(elapsed * 7) * 0.3;
+        editorBot.leftArm.rotation.x = -0.75 + Math.sin(elapsed * 26) * 0.22;
+        editorBot.rightArm.rotation.x = -0.75 + Math.cos(elapsed * 26) * 0.22;
+
+        const editFlash = Math.sin(elapsed * 14) > 0 ? 0xa855f7 : 0x22d3ee;
+        editorMonitorMats.forEach(mat => mat.color.setHex(editFlash));
+        editorLight.color.setHex(editFlash);
+        editorLight.intensity = 2.4;
+      } else {
+        editorBot.group.position.y = THREE.MathUtils.lerp(editorBot.group.position.y, 0.72, 0.15);
+        editorBot.headGroup.rotation.y = Math.sin(elapsed * 1.9 + 1.2) * 0.22;
+        editorBot.headGroup.rotation.x = Math.cos(elapsed * 2.4) * 0.06;
+        editorBot.leftArm.rotation.x = -0.65 + Math.sin(elapsed * 20) * 0.16;
+        editorBot.rightArm.rotation.x = -0.65 + Math.cos(elapsed * 20) * 0.16;
+
+        editorMonitorMats.forEach(mat => mat.color.setHex(0x06b6d4));
+        editorLight.color.setHex(0x06b6d4);
+        editorLight.intensity = 1.4 + Math.cos(elapsed * 3.5) * 0.2;
+      }
+
+      // Animasi cincin lantai & antena kedua karyawan
       statusRing.scale.setScalar(1 + Math.sin(elapsed * 3) * 0.03);
-      antennaTip.scale.setScalar(1 + Math.sin(elapsed * 6) * 0.2);
+      editorStatusRing.scale.setScalar(1 + Math.cos(elapsed * 3) * 0.03);
+      assistantBot.antennaTip.scale.setScalar(1 + Math.sin(elapsed * 6) * 0.2);
+      editorBot.antennaTip.scale.setScalar(1 + Math.cos(elapsed * 6) * 0.2);
 
       // Transisi kamera halus
       if (isTransitioning) {
